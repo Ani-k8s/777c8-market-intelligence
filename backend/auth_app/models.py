@@ -17,6 +17,12 @@ class UserAccessProfile(models.Model):
         verbose_name = "User access profile"
         verbose_name_plural = "User access profiles"
 
+    @classmethod
+    def get_for_user(cls, user):
+        """Safely get or create a profile for a user."""
+        profile, _ = cls.objects.get_or_create(user=user)
+        return profile
+
     def __str__(self):
         return f"{self.user.username} access"
 

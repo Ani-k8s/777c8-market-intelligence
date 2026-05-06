@@ -13,12 +13,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Safety check: ensure migrations have run
         User = get_user_model()
-        table_name = User._meta.db_table
-        if table_name not in connection.introspection.table_names():
+        tables = connection.introspection.table_names()
+        
+        user_table = User._meta.db_table
+        profile_table = UserAccessProfile._meta.db_table
+        
+        if user_table not in tables or profile_table not in tables:
             self.stdout.write(
                 self.style.WARNING(
-                    f"Table {table_name} does not exist. Skipping admin seeding. "
-                    "Ensure migrations have run first."
+                    "Database tables not ready yet. Skipping admin seeding. "
+                    "This is normal during the very first deployment phase."
                 )
             )
             return

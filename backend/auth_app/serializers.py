@@ -95,5 +95,4 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 def ensure_access_profile(user):
-    profile, _ = UserAccessProfile.objects.get_or_create(user=user)
-    return profile
+    return UserAccessProfile.get_for_user(user)
