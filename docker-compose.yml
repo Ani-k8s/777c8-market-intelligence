@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: 777c8_market
+      POSTGRES_USER: 777c8
+      POSTGRES_PASSWORD: 777c8_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DJANGO_DEBUG: "True"
+      DJANGO_SECRET_KEY: local-docker-secret-change-me
+      ADMIN_USERNAME: Admin
+      ADMIN_PASSWORD: Admin@123
+      ADMIN_EMAIL: admin@777c8.local
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      CSRF_TRUSTED_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      DATABASE_URL: postgres://777c8:777c8_dev_password@db:5432/777c8_market
+      DATABASE_SSL_REQUIRE: "False"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000/api
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
