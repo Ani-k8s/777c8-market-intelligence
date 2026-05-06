@@ -18,9 +18,6 @@ from .serializers import (
 )
 
 
-User = get_user_model()
-
-
 def token_payload_for(user):
     refresh = RefreshToken.for_user(user)
     return {
@@ -65,6 +62,7 @@ class UserListView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
+        User = get_user_model()
         users = User.objects.order_by("-is_staff", "username")
         return Response({"users": UserSummarySerializer(users, many=True).data})
 
@@ -93,6 +91,7 @@ class ToggleUserView(APIView):
     def post(self, request):
         serializer = ToggleUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        User = get_user_model()
         target = User.objects.filter(id=serializer.validated_data["user_id"]).first()
         if target is None:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -114,6 +113,7 @@ class SetUserExpiryView(APIView):
     def post(self, request):
         serializer = SetUserExpirySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        User = get_user_model()
         target = User.objects.filter(id=serializer.validated_data["user_id"]).first()
         if target is None:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -130,6 +130,7 @@ class ResetPasswordView(APIView):
     def post(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        User = get_user_model()
         target = User.objects.filter(id=serializer.validated_data["user_id"]).first()
         if target is None:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -145,6 +146,7 @@ class DeleteUserView(APIView):
     def post(self, request):
         serializer = DeleteUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        User = get_user_model()
         target = User.objects.filter(id=serializer.validated_data["user_id"]).first()
         if target is None:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -161,6 +163,7 @@ class AdminStatsView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
+        User = get_user_model()
         users = User.objects.all()
         serialized = UserSummarySerializer(users, many=True).data
         return Response(

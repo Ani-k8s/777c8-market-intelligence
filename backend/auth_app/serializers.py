@@ -5,16 +5,13 @@ from rest_framework import serializers
 from .models import UserAccessProfile
 
 
-User = get_user_model()
-
-
 class UserSummarySerializer(serializers.ModelSerializer):
     is_admin = serializers.SerializerMethodField()
     access_expires_at = serializers.SerializerMethodField()
     is_expired = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = "auth.User"
         fields = (
             "id",
             "username",
@@ -49,6 +46,7 @@ class UserCreateSerializer(serializers.Serializer):
     access_expires_at = serializers.DateTimeField(required=False, allow_null=True)
 
     def validate_username(self, value):
+        User = get_user_model()
         if User.objects.filter(username__iexact=value).exists():
             raise serializers.ValidationError("A user with this username already exists.")
         return value
@@ -58,6 +56,7 @@ class UserCreateSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
+        User = get_user_model()
         email = validated_data.get("email", "")
         return User.objects.create_user(
             username=validated_data["username"],
