@@ -7,6 +7,20 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: 777c8_market_test
+          POSTGRES_USER: 777c8
+          POSTGRES_PASSWORD: 777c8_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U 777c8 -d 777c8_market_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     defaults:
       run:
         working-directory: backend
@@ -23,6 +37,8 @@ jobs:
           DJANGO_SECRET_KEY: ci-secret
           ADMIN_USERNAME: Admin
           ADMIN_PASSWORD: Admin@123
+          DATABASE_URL: postgres://777c8:777c8_test_password@localhost:5432/777c8_market_test
+          DATABASE_SSL_REQUIRE: "False"
         run: python manage.py test
 
   frontend:

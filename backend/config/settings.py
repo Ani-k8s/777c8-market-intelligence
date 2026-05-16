@@ -3,6 +3,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +30,7 @@ CORS_ALLOWED_ORIGINS = env_list(
 CORS_ALLOW_CREDENTIALS = True
 
 INSTALLED_APPS = [
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -41,7 +43,6 @@ INSTALLED_APPS = [
     "market_app",
     "analysis_app",
     "admin_app",
-    "django.contrib.admin",
 ]
 
 MIDDLEWARE = [
@@ -76,22 +77,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database configuration
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ImproperlyConfigured(
+        "DATABASE_URL is required. 777c8 Market Intelligence is PostgreSQL-only in production and local development."
+    )
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
+    "default": dj_database_url.config(
+        default=DATABASE_URL,
         conn_max_age=600,
         conn_health_checks=True,
+        ssl_require=env_bool("DATABASE_SSL_REQUIRE", not DEBUG),
     )
 }
-
-# Fallback for local development
-if not os.getenv("DATABASE_URL"):
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
