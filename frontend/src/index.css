@@ -2,65 +2,192 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
-  background: #0b0f14;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* =========================================================
+   777c8 — Premium Fintech Design System
+   Deep Crimson × Amber Gold × Institutional Dark
+   ========================================================= */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #07070F;
+    background-image:
+      radial-gradient(ellipse at 15% 0%, rgba(200, 16, 46, 0.08) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 100%, rgba(201, 146, 10, 0.05) 0%, transparent 40%),
+      linear-gradient(180deg, #07070F 0%, #07070F 100%);
+    color: #F0F0F8;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* ---- Focus rings ---- */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid rgba(200, 16, 46, 0.70);
+    outline-offset: 2px;
+  }
+
+  /* ---- Premium scrollbar ---- */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0D0D1A;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2A0A10;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C8102E;
+  }
+
+  /* ---- Form elements inherit font ---- */
+  button, input, select, textarea {
+    font: inherit;
+  }
 }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
-  background:
-    linear-gradient(180deg, rgba(17, 24, 32, 0.9) 0%, rgba(11, 15, 20, 1) 34%),
-    #0b0f14;
-  color: #ecf3f1;
+/* =========================================================
+   COMPONENT UTILITIES
+   ========================================================= */
+
+@layer components {
+
+  /* --- Field (form inputs) --- */
+  .field {
+    @apply w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-textPrimary
+           placeholder:text-textMuted transition-all duration-200
+           focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20;
+  }
+
+  /* --- Label --- */
+  .label {
+    @apply mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-textMuted;
+  }
+
+  /* --- Glass panel (for nav, cards) --- */
+  .glass {
+    @apply bg-surface/80 backdrop-blur-xl border border-line/60;
+  }
+
+  /* --- Gradient border card --- */
+  .card-premium {
+    @apply relative rounded-xl border border-line bg-surface
+           shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_24px_80px_rgba(0,0,0,0.55)];
+  }
+
+  /* --- Glow button (brand) --- */
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg
+           bg-brand-gradient px-4 py-2.5 text-sm font-bold text-white
+           shadow-[0_0_0_1px_rgba(200,16,46,0.30),0_4px_16px_rgba(200,16,46,0.35)]
+           transition-all duration-200
+           hover:shadow-[0_0_0_1px_rgba(200,16,46,0.50),0_4px_24px_rgba(200,16,46,0.50)]
+           hover:brightness-110
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* --- Skeleton shimmer --- */
+  .skeleton {
+    @apply rounded-md bg-gradient-to-r from-surface via-surfaceHigh to-surface
+           bg-[length:400px_100%] animate-shimmer;
+  }
+
+  /* --- Nav item active state --- */
+  .nav-active {
+    @apply relative text-white bg-brandDim border-l-2 border-brand;
+  }
+
+  /* --- Dot grid pattern --- */
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* --- Red glow orb (decorative) --- */
+  .orb-red {
+    @apply absolute rounded-full blur-[80px] bg-brand/20 pointer-events-none;
+  }
+
+  /* --- Gold glow orb (decorative) --- */
+  .orb-gold {
+    @apply absolute rounded-full blur-[80px] bg-gold/15 pointer-events-none;
+  }
+
+  /* --- Market pulse dot --- */
+  .pulse-dot {
+    @apply relative inline-block h-2 w-2 rounded-full bg-success;
+  }
+  .pulse-dot::after {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-success animate-ping opacity-75;
+  }
+
+  /* --- Section heading --- */
+  .section-label {
+    @apply text-[10px] font-semibold uppercase tracking-[0.16em] text-textMuted;
+  }
+
+  /* --- Premium table row hover --- */
+  .table-row-hover {
+    @apply transition-colors duration-150 hover:bg-brandDim;
+  }
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
+/* =========================================================
+   CUSTOM KEYFRAME ANIMATIONS
+   ========================================================= */
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid #38d39f;
-  outline-offset: 2px;
-}
+@layer utilities {
 
-.field {
-  @apply w-full rounded-md border border-line bg-ink px-3 py-2 text-sm text-white placeholder:text-slate-500 transition focus:border-brand focus:outline-none;
-}
+  /* Shimmer for skeletons */
+  @keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position:  400px 0; }
+  }
 
-.label {
-  @apply mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-400;
-}
+  /* Glow pulse */
+  @keyframes pulse_glow {
+    0%, 100% { opacity: 0.55; transform: scale(1);    }
+    50%       { opacity: 1;    transform: scale(1.18); }
+  }
 
-.panel {
-  @apply rounded-lg border border-line bg-panel shadow-glow;
-}
+  /* Horizontal ticker scroll */
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 
-.panel-muted {
-  @apply rounded-lg border border-line bg-panelSoft;
-}
+  /* Fade in from below */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
 
-.action-button {
-  @apply inline-flex items-center justify-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-ink transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60;
-}
+  /* Number count-up flicker */
+  @keyframes numReveal {
+    0%  { opacity: 0; filter: blur(4px); }
+    100%{ opacity: 1; filter: blur(0);   }
+  }
 
-.ghost-button {
-  @apply inline-flex items-center justify-center gap-2 rounded-md border border-line bg-transparent px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-60;
-}
-
-.danger-button {
-  @apply inline-flex items-center justify-center gap-2 rounded-md border border-danger/50 bg-danger/10 px-3 py-2 text-sm font-semibold text-danger transition hover:bg-danger/20 disabled:cursor-not-allowed disabled:opacity-60;
+  .animate-fadeIn    { animation: fadeIn 0.45s ease-out forwards; }
+  .animate-numReveal { animation: numReveal 0.55s ease-out forwards; }
 }

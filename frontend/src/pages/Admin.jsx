@@ -130,10 +130,13 @@ export default function Admin() {
 
   return (
     <AppShell>
-      <div className="mb-6 flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
+      <div className="mb-8 flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
-          <h1 className="text-3xl font-black">Admin Panel</h1>
-          <p className="mt-2 text-sm text-slate-400">
+          <h1 className="text-4xl font-black tracking-tight text-textPrimary">
+            Admin{" "}
+            <span style={{ backgroundImage: "linear-gradient(135deg,#C8102E,#F0B429)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Panel</span>
+          </h1>
+          <p className="mt-2 text-sm text-textSecondary">
             Manage private access, account expiry, password resets, and user status.
           </p>
         </div>
@@ -196,12 +199,12 @@ export default function Admin() {
                 />
               </div>
               {error ? (
-                <div className="rounded-md border border-danger/40 bg-danger/10 p-3 text-sm text-danger">
+                <div className="rounded-lg border border-danger/30 bg-dangerDim p-3 text-sm text-danger">
                   {error}
                 </div>
               ) : null}
               {message ? (
-                <div className="rounded-md border border-brand/40 bg-brand/10 p-3 text-sm text-brand">
+                <div className="rounded-lg border border-gold/30 bg-goldDim p-3 text-sm text-goldLight">
                   {message}
                 </div>
               ) : null}
@@ -219,35 +222,35 @@ export default function Admin() {
           </CardHeader>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[980px] text-left text-sm">
-              <thead className="bg-panelSoft text-xs uppercase tracking-[0.12em] text-slate-500">
+              <thead className="text-[10px] uppercase tracking-[0.14em] text-textMuted" style={{ background: "rgba(13,13,26,0.80)" }}>
                 <tr>
-                  <th className="px-5 py-3">User</th>
-                  <th className="px-5 py-3">Role</th>
-                  <th className="px-5 py-3">Access</th>
-                  <th className="px-5 py-3">Expiry</th>
-                  <th className="px-5 py-3">Reset Password</th>
-                  <th className="px-5 py-3 text-right">Actions</th>
+                  <th className="px-5 py-3.5 font-semibold">User</th>
+                  <th className="px-5 py-3.5 font-semibold">Role</th>
+                  <th className="px-5 py-3.5 font-semibold">Access</th>
+                  <th className="px-5 py-3.5 font-semibold">Expiry</th>
+                  <th className="px-5 py-3.5 font-semibold">Reset Password</th>
+                  <th className="px-5 py-3.5 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line">
+              <tbody className="divide-y divide-line/50">
                 {users.map((target) => (
-                  <tr key={target.id}>
+                  <tr key={target.id} className="transition-colors duration-150 hover:bg-brandDim/40">
                     <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="grid h-10 w-10 place-items-center rounded-md bg-ink text-brand">
-                          <UserRound size={17} />
+                        <div className="flex items-center gap-3">
+                          <div className="grid h-9 w-9 place-items-center rounded-lg" style={{ background: "linear-gradient(135deg,#2A0010,#5A0020)", boxShadow: "0 0 0 1px rgba(200,16,46,0.25)" }}>
+                            <UserRound size={15} className="text-brand" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-textPrimary">{target.username}</p>
+                            <p className="text-xs text-textMuted">{target.email || "No email"}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-bold text-white">{target.username}</p>
-                          <p className="text-xs text-slate-500">{target.email || "No email"}</p>
-                        </div>
-                      </div>
                     </td>
-                    <td className="px-5 py-4">
-                      <Badge variant={target.is_admin ? "signal" : "default"}>
-                        {target.is_admin ? "Admin" : "User"}
-                      </Badge>
-                    </td>
+                      <td className="px-5 py-4">
+                        <Badge variant={target.is_admin ? "gold" : "default"}>
+                          {target.is_admin ? "Admin" : "Trader"}
+                        </Badge>
+                      </td>
                     <td className="px-5 py-4">
                       <label className="inline-flex cursor-pointer items-center gap-2">
                         <input
@@ -257,9 +260,9 @@ export default function Admin() {
                           disabled={target.id === user?.id}
                           onChange={() => handleToggle(target)}
                         />
-                        <span className="h-6 w-11 rounded-full bg-line transition after:ml-1 after:mt-1 after:block after:h-4 after:w-4 after:rounded-full after:bg-slate-300 after:transition after:content-[''] peer-checked:bg-brand peer-checked:after:translate-x-5 peer-disabled:cursor-not-allowed peer-disabled:opacity-60" />
-                        <span className="text-slate-300">
-                          {target.is_expired ? "Expired" : target.is_active ? "Enabled" : "Disabled"}
+                        <span className="h-6 w-11 rounded-full bg-line/80 transition after:ml-1 after:mt-1 after:block after:h-4 after:w-4 after:rounded-full after:bg-textMuted after:transition after:content-[''] peer-checked:bg-brand peer-checked:after:translate-x-5 peer-checked:after:bg-white peer-disabled:cursor-not-allowed peer-disabled:opacity-60" />
+                        <span className="text-textSecondary text-xs">
+                          {target.is_expired ? "Expired" : target.is_active ? "Active" : "Disabled"}
                         </span>
                       </label>
                     </td>
@@ -322,12 +325,13 @@ export default function Admin() {
 }
 
 function StatCard({ label, value, tone = "default" }) {
-  const variant = tone === "brand" ? "brand" : tone === "danger" ? "danger" : tone === "caution" ? "caution" : "default";
+  const variant = tone === "brand" ? "success" : tone === "danger" ? "danger" : tone === "caution" ? "caution" : "default";
+  const accentColor = tone === "brand" ? "#22C55E" : tone === "danger" ? "#EF4444" : tone === "caution" ? "#F59E0B" : "#4A4A6A";
   return (
     <Card>
       <CardContent>
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">{label}</p>
-        <p className="mt-3 text-3xl font-black text-white">{value}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-textMuted">{label}</p>
+        <p className="mt-3 text-4xl font-black" style={{ color: accentColor }}>{value}</p>
         <div className="mt-4">
           <Badge variant={variant}>Access Control</Badge>
         </div>

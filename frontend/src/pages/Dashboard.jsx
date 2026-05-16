@@ -49,9 +49,9 @@ const initialForm = {
 };
 
 const probabilityColors = {
-  sideways: "#F4B942",
-  breakout: "#38D39F",
-  sharp_move: "#5BC0EB",
+  sideways: "#C9920A",
+  breakout: "#C8102E",
+  sharp_move: "#60A5FA",
 };
 
 export default function Dashboard() {
@@ -142,10 +142,10 @@ export default function Dashboard() {
 
   return (
     <AppShell liveData={liveData}>
-      <div className="mb-6 flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
+      <div className="mb-8 flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <Badge variant={liveData?.is_live ? "brand" : "caution"}>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <Badge variant={liveData?.is_live ? "success" : "caution"}>
               {liveData?.source || "Connecting"}
             </Badge>
             <Badge variant="signal">{liveData?.sentiment?.label || "Loading sentiment"}</Badge>
@@ -153,28 +153,29 @@ export default function Dashboard() {
               {liveData?.expiry_warning || "Expiry monitor"}
             </Badge>
           </div>
-          <h1 className="text-3xl font-black tracking-normal text-white md:text-4xl">
-            777c8 Market Intelligence
+          <h1 className="text-4xl font-black tracking-tight text-textPrimary md:text-5xl">
+            Market{" "}
+            <span style={{ backgroundImage: "linear-gradient(135deg,#C8102E,#F0B429)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Intelligence</span>
           </h1>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
-            Live index intelligence, operator-retail psychology, probability mapping,
-            budget-aware strike planning, and branded content generation.
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-textSecondary">
+            Live index intelligence · Operator-retail psychology · Probability mapping ·
+            Budget-aware strike planning · Branded content generation.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button type="button" variant="secondary" onClick={() => refresh(true)} disabled={liveLoading}>
             <RefreshCcw size={16} className={liveLoading ? "animate-spin" : ""} />
-            Refresh Data
+            Refresh
           </Button>
           <Button type="button" variant="secondary" onClick={downloadReport} disabled={!analysis}>
             <FileDown size={16} />
-            Download Report
+            Report
           </Button>
         </div>
       </div>
 
       {liveError ? (
-        <div className="mb-6 rounded-lg border border-caution/40 bg-caution/10 p-4 text-sm text-caution">
+        <div className="mb-6 rounded-xl border border-danger/30 bg-dangerDim px-4 py-3 text-sm text-danger">
           {liveError}
         </div>
       ) : null}
@@ -214,18 +215,18 @@ export default function Dashboard() {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="priceFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#38D39F" stopOpacity={0.36} />
-                    <stop offset="95%" stopColor="#38D39F" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#C8102E" stopOpacity={0.30} />
+                    <stop offset="95%" stopColor="#C8102E" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#263241" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="time" stroke="#64748B" tickLine={false} axisLine={false} minTickGap={24} />
-                <YAxis stroke="#64748B" tickLine={false} axisLine={false} domain={["auto", "auto"]} />
-                <Tooltip contentStyle={{ background: "#111820", border: "1px solid #263241", borderRadius: 8 }} />
+                <CartesianGrid stroke="#1C1C2E" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="time" stroke="#4A4A6A" tickLine={false} axisLine={false} minTickGap={24} tick={{ fontSize: 11 }} />
+                <YAxis stroke="#4A4A6A" tickLine={false} axisLine={false} domain={["auto", "auto"]} tick={{ fontSize: 11 }} />
+                <Tooltip contentStyle={{ background: "#0D0D1A", border: "1px solid #1C1C2E", borderRadius: 10, fontSize: 12 }} />
                 <Area
                   type="monotone"
                   dataKey="close"
-                  stroke="#38D39F"
+                  stroke="#C8102E"
                   fill="url(#priceFill)"
                   strokeWidth={2}
                   dot={false}
@@ -247,10 +248,10 @@ export default function Dashboard() {
                   <button
                     key={item}
                     type="button"
-                    className={`rounded-md border px-3 py-2 text-sm font-bold transition ${
+                    className={`rounded-lg border px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                       form.index === item
-                        ? "border-brand bg-brand/10 text-brand"
-                        : "border-line bg-ink text-slate-400 hover:text-white"
+                        ? "border-brand/60 bg-brandDim text-brand shadow-[0_0_0_1px_rgba(200,16,46,0.20)]"
+                        : "border-line/70 bg-ink text-textMuted hover:border-line hover:text-textPrimary"
                     }`}
                     onClick={() => setForm({ ...form, index: item })}
                   >
@@ -259,7 +260,7 @@ export default function Dashboard() {
                 ))}
               </div>
               <div>
-                <Label htmlFor="budget">Budget</Label>
+                <Label htmlFor="budget">Budget (₹)</Label>
                 <Input
                   id="budget"
                   type="number"
@@ -271,7 +272,7 @@ export default function Dashboard() {
                 />
               </div>
               <div>
-                <Label htmlFor="risk">Risk</Label>
+                <Label htmlFor="risk">Risk Appetite</Label>
                 <Select
                   id="risk"
                   value={form.risk}
@@ -282,20 +283,20 @@ export default function Dashboard() {
                   <option>High</option>
                 </Select>
               </div>
-              <div className="rounded-md border border-line bg-ink p-3">
-                <p className="text-xs uppercase tracking-[0.12em] text-slate-500">Live Price</p>
-                <p className="mt-1 text-2xl font-black text-white">
-                  {selectedSnapshot?.price ? selectedSnapshot.price.toLocaleString("en-IN") : "--"}
+              <div className="rounded-xl border border-lineGold/40 bg-goldDim p-4">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-textMuted">Live Price</p>
+                <p className="mt-1.5 text-3xl font-black text-goldLight">
+                  {selectedSnapshot?.price ? selectedSnapshot.price.toLocaleString("en-IN") : "—"}
                 </p>
               </div>
               {error ? (
-                <div className="rounded-md border border-danger/40 bg-danger/10 p-3 text-sm text-danger">
+                <div className="rounded-lg border border-danger/30 bg-dangerDim p-3 text-sm text-danger">
                   {error}
                 </div>
               ) : null}
-              <Button type="submit" className="w-full" disabled={loading || liveLoading}>
+              <Button type="submit" className="w-full h-11" disabled={loading || liveLoading}>
                 <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
-                {loading ? "Running Engine" : "Run Analysis Engine"}
+                {loading ? "Running Engine…" : "Run Analysis Engine"}
               </Button>
             </form>
           </CardContent>
@@ -453,12 +454,12 @@ function ProbabilityEngine({ analysis }) {
         <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={data} dataKey="value" innerRadius={58} outerRadius={86} paddingAngle={4}>
+              <Pie data={data} dataKey="value" innerRadius={60} outerRadius={88} paddingAngle={5}>
                 {data.map((entry) => (
                   <Cell key={entry.name} fill={probabilityColors[entry.name]} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ background: "#111820", border: "1px solid #263241", borderRadius: 8 }} />
+              <Tooltip contentStyle={{ background: "#0D0D1A", border: "1px solid #1C1C2E", borderRadius: 10, fontSize: 12 }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -500,11 +501,11 @@ function OperatorRetail({ analysis }) {
           <div className="mt-5 h-52">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analysis ? Object.entries(analysis.probability).map(([name, value]) => ({ name, value })) : []}>
-                <CartesianGrid stroke="#263241" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" stroke="#64748B" tickLine={false} axisLine={false} />
-                <YAxis stroke="#64748B" tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ background: "#111820", border: "1px solid #263241", borderRadius: 8 }} />
-                <Bar dataKey="value" radius={[4, 4, 0, 0]} fill="#38D39F" />
+                <CartesianGrid stroke="#1C1C2E" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" stroke="#4A4A6A" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                <YAxis stroke="#4A4A6A" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                <Tooltip contentStyle={{ background: "#0D0D1A", border: "1px solid #1C1C2E", borderRadius: 10, fontSize: 12 }} />
+                <Bar dataKey="value" radius={[5, 5, 0, 0]} fill="#C8102E" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -515,7 +516,7 @@ function OperatorRetail({ analysis }) {
 }
 
 function MindsetCard({ title, icon: Icon, text, tone }) {
-  const toneClass = tone === "brand" ? "border-brand/40 bg-brand/10 text-brand" : "border-danger/40 bg-danger/10 text-danger";
+  const toneClass = tone === "brand" ? "border-gold/40 bg-goldDim text-goldLight" : "border-danger/40 bg-dangerDim text-danger";
   return (
     <Card>
       <CardContent>
@@ -645,17 +646,17 @@ function BrandedImageCard({ analysis, imageRef, format }) {
     <div
       ref={imageRef}
       style={{ width, height }}
-      className="relative overflow-hidden rounded-lg border border-line bg-[#070B10] p-8 text-white"
+      className="relative overflow-hidden rounded-lg border border-line bg-[#07070F] p-8 text-white"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,211,159,0.25),transparent_30%),radial-gradient(circle_at_82%_28%,rgba(91,192,235,0.16),transparent_28%)]" />
-      <div className="absolute inset-0 grid place-items-center text-[108px] font-black text-white/[0.04]">
+      <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 20% 20%, rgba(200,16,46,0.20), transparent 35%), radial-gradient(circle at 82% 75%, rgba(201,146,10,0.14), transparent 30%)" }} />
+      <div className="absolute inset-0 grid place-items-center text-[108px] font-black" style={{ color: "rgba(255,255,255,0.03)" }}>
         777c8
       </div>
       <div className="relative z-10 flex h-full flex-col">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-4xl font-black text-brand">777c8</p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Market Intelligence</p>
+            <p className="text-4xl font-black" style={{ backgroundImage: "linear-gradient(135deg,#C8102E,#F0B429)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>777c8</p>
+            <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "#4A4A6A" }}>Market Intelligence</p>
           </div>
           <Badge variant={analysis?.is_live ? "brand" : "caution"}>{analysis?.source || "Live"}</Badge>
         </div>
@@ -711,24 +712,24 @@ function RiskPanel({ warnings }) {
 
 function EngineMetric({ label, value }) {
   return (
-    <div className="rounded-lg border border-line bg-ink p-4">
-      <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">{label}</p>
-      <p className="mt-3 text-lg font-black text-white">{value}</p>
+    <div className="rounded-xl border border-line/60 bg-ink p-4" style={{ background: "rgba(7,7,15,0.85)" }}>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-textMuted">{label}</p>
+      <p className="mt-3 text-lg font-black text-textPrimary">{value}</p>
     </div>
   );
 }
 
 function DecisionBadge({ decision }) {
-  const variant = decision === "TRADE SETUP" ? "brand" : decision === "AVOID" ? "danger" : "caution";
+  const variant = decision === "TRADE SETUP" ? "gold" : decision === "AVOID" ? "danger" : "caution";
   return <Badge variant={variant}>{decision || "WAIT"}</Badge>;
 }
 
 function SkeletonGrid({ count }) {
   return Array.from({ length: count }).map((_, index) => (
-    <div key={index} className="rounded-lg border border-line bg-ink p-4">
-      <div className="h-3 w-24 rounded-sm bg-line" />
-      <div className="mt-5 h-7 w-32 rounded-sm bg-line" />
-      <div className="mt-5 h-3 rounded-sm bg-line" />
+    <div key={index} className="rounded-xl border border-line/50 bg-ink p-4 animate-pulse">
+      <div className="h-2.5 w-20 rounded-md bg-surfaceHigh" />
+      <div className="mt-5 h-7 w-28 rounded-md bg-surfaceHigh" />
+      <div className="mt-4 h-2.5 w-full rounded-md bg-surfaceHigh" />
     </div>
   ));
 }
